@@ -13,6 +13,10 @@ node install
 
 ## Run
 Run
-```node index.js```
+```
+node index.js
+```
 Open 
-```http://localhost:8000```
+```
+http://localhost:8000
+```
