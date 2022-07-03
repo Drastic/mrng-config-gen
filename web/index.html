@@ -127,7 +127,7 @@
 
       function getDevices() {
         loader(true);
-        fetch('http://localhost:8000/devices', {
+        fetch('/devices', {
             method: "POST",
             body: JSON.stringify(devices)
         })
@@ -155,7 +155,7 @@
         inputFile.value = null;
         labelFile.innerText = file.name;
         inputBtnImport.disabled=true;
-        fetch('http://localhost:8000/upload', {
+        fetch('/upload', {
             method: "POST",
             body: file,
             headers: {
@@ -176,16 +176,16 @@
         loader(false);
       }
 
+      // Process response
       function processResp(json) {
-        // Process response
         hideUpload();
         if (json.hasOwnProperty('tree')) renderTree(json.tree);
         if (json.hasOwnProperty('devices')) saveSession(json.devices);
-        throwAlert(2,'Data imported successfully.',arguments.callee.name)
+        throwAlert(2,'Data imported successfully.');
       }
 
-      function saveSession(devices) {
-        // Store devices in cookies
+        // Save current devices into session storage
+        function saveSession(devices) {
         if (!Array.isArray(devices)) throwAlert(0,'Wrong data type returned in json.devices!',arguments.callee.name);
         sessionStorage.setItem('devices', JSON.stringify(devices));
       }
@@ -258,6 +258,7 @@
         return nodes;
       }
 
+      // Show/hide loader animation
       function loader(state) {
         const loading = document.getElementById('loader');
         const load = '<i class="md-spinner md-spinner--36 md-spinner--blue"></i>';
@@ -271,6 +272,7 @@
         }
       }
 
+      // Fire alert popup
       function throwAlert(lvl,msg,src=null) {
         if (src) msg += ` (in ${src}).`;
         const levels = ['error','warning','success','info'];
