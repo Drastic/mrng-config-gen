@@ -12,11 +12,21 @@ node install
 ```
 
 ## Run
-Run
+Run app:
 ```
 node index.js
 ```
-Open 
+Open in browser:
 ```
 http://localhost:8000
 ```
+
+## Todo
+1) Publish on Github - Done
+2) Logging - In progress
+3) MongoDB
+4) Config files
+5) Docker
+
+## Credit
+HTML is using @momentum-ui by Cisco
