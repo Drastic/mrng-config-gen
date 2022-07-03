@@ -6,7 +6,9 @@ Clone this repo using a git client:
 ```
 git clone https://github.com/Drastic/mrng-config-gen.git
 ```
+Install depencies:
+`node install`
 
 ## Run
 Run `node index.js`
-Go to `http://localhost:8000`
+Open `http://localhost:8000`
