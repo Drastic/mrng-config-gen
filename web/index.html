@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Project</title>
+    <link rel="stylesheet" href="./css/momentum-ui.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+    <header class="md-top-bar md-top-bar--blue" role="navigation">
+      <div class="md-top-bar__container">
+        <div class="md-top-bar__brand">
+          <a class="md-brand" href="/">
+            <div class="md-brand__logo md-brand__logo--pad">
+              <!-- Note: use either image or icon, but not both -->
+              <img src="./images/cisco/cisco-logo-blue.svg" alt="Momentum UI">
+              <!-- i class="icon icon-cisco-logo"></i -->
+            </div>
+            <div class="md-brand__title">CMSP to mRemoteNG</div>
+          </a>
+        </div>
+        <nav class="md-top-bar__nav ">
+          <div class="md-list md-list--horizontal" role="list">
+            <a class="md-list-item active" role="listItem" href="javascript:void(0)">Editor</a>
+            <a id='upload-button' class="md-list-item" role="listItem" href="javascript:void(0)">Upload</a>
+            <a class="md-list-item" role="listItem" href="javascript:void(0)">Layout</a>
+            <a class="md-list-item" role="listItem" href="javascript:void(0)">Navigation</a>
+          </div>
+        </nav>
+        <div class="md-top-bar__right ">
+          <!-- Note: conditionally show top-bar__user or top-bar__logged-out -->
+           <div class="md-top-bar__user">
+             <button class="md-avatar md-button md-button--circle md-button--link">
+                CU
+             </button>
+           </div>
+        </div>
+      </div>
+    </header>
+    <div class="show-grid">
+      <div class="row">
+        <div class="column"></div>
+        <div class="column">
+          <div id="mrng-content"></div><br>
+          <div id="mrng-control"><button id="mrng-btn-export" type="button" class="md-button md-button--blue" disabled>Generate export file</button></div>
+        </div>
+      </div>
+    </div>
+    <footer>2022</footer>
+
+    <div id="alert-container" class="md-alert__container md-alert__container--bottom-right"></div>
+
+    <div id="upload-modal" class="md-modal__backdrop fade in hide">
+      <div
+        role="dialog"
+        id="react-aria-modal-dialog"
+        class="md-modal md-modal--small in"
+        aria-labelledby="modal5"
+      >
+        <div class="md-modal__content">
+          <div class="md-modal__flex-container">
+            <div class="md-modal__header">
+              <span class="md-modal__title">Device List Upload</span>
+              <span class="md-modal__message">Upload device list in *.csv format</span>
+              <span class="md-modal__message font-size_small">Columns required: Name|Address|Category|Class|DID|Organization</span>
+              <button class="md-close md-modal__close" onclick="hideUpload()"></button>
+            </div>
+            <div class="md-alert-banner md-alert-banner--error hide">
+              <div id="mrng-error" class="md-alert-banner__text"></div>
+            </div>
+            <div class="md-modal__image"><img src="./images/cisco/cisco-logo-blue.svg" alt="Momentum UI"></div>
+            <div class="md-modal__body">
+              <form class="" id="mrng-form" action="/upload" method="POST" enctype="multipart/form-data">
+                <input id="mrng-file" type="file" hidden />
+                <div class="md-panel__cta">
+                  <label class="md-label__secondary-label">.</label>
+                  <button id="mrng-btn-import" type="button" class="md-button md-button--blue">Upload file</button>
+                  <label class="md-label__secondary-label" for="secondaryLabelInput">
+                    <span id="mrng-fname" class="md-input__secondary-label">None</span>
+                  </label>
+                </div>
+              </form>
+            </div>
+            <div class="md-modal__footer">
+              <button
+                class="md-button md-button--36 md-button--default"
+                alt="Close Modal"
+                type="button"
+                aria-label="Close Modal"
+                onclick="hideUpload()"
+              >
+                <span class="md-button__children" style="opacity: 1;">Cancel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Session
+      if (!sessionStorage.getItem('cust')) sessionStorage.setItem('cust', 'mm');
+      if (!sessionStorage.getItem('user')) sessionStorage.setItem('user', '1');
+      const user = sessionStorage.getItem('user');
+      const cust = sessionStorage.getItem('cust');
+      const devices = sessionStorage.getItem('devices') ? sessionStorage.getItem('devices') : null;
+
+      const inputBtnImport = document.getElementById('mrng-btn-import');
+      const inputBtnExport = document.getElementById('mrng-btn-export');
+      const inputFile = document.getElementById('mrng-file');
+      const labelFile = document.getElementById('mrng-fname');
+      const labelError = document.getElementById('mrng-error');
+      const textArea = document.getElementById('mrng-content');
+      const uploadButton = document.getElementById('upload-button');
+      const uploadModal = document.getElementById('upload-modal');
+      const alertContainer = document.getElementById('alert-container');
+
+      if (devices) getDevices();
+
+      const showUpload = () => { uploadModal.classList.remove('hide'); }
+      const hideUpload = () => { uploadModal.classList.add('hide'); }
+      const openDialog = () => { inputFile.click(); }
+      const exportXml = () => { inputBtnExport.disabled = true; throwAlert(1,'Export is not implemented yet.'); }
+
+      uploadButton.addEventListener('click', showUpload);
+      inputBtnImport.addEventListener('click', openDialog);
+      inputBtnExport.addEventListener('click', exportXml);
+      inputFile.addEventListener('change', importCsv);
+
+      function getDevices() {
+        loader(true);
+        fetch('http://localhost:8000/devices', {
+            method: "POST",
+            body: JSON.stringify(devices)
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+          }
+          return response;
+        })
+        .then(response => response.json())
+        .then(data => processResp(data))
+        .catch(err => throwAlert(0,err,arguments.callee.name));
+        inputBtnExport.disabled = false
+        loader(false);
+      }
+
+      // CSV import
+      function importCsv() {
+        loader(true);
+        if (!inputFile.files.length) {
+          throwAlert(1,'No input file found.',arguments.callee.name);
+          return;
+        }
+        let file = inputFile.files[0];
+        inputFile.value = null;
+        labelFile.innerText = file.name;
+        inputBtnImport.disabled=true;
+        fetch('http://localhost:8000/upload', {
+            method: "POST",
+            body: file,
+            headers: {
+              'Accept': 'text/csv',
+              'Content-Type': 'text/csv'
+            }
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+          }
+          return response;
+        })
+        .then(response => response.json())
+        .then(data => processResp(data))
+        .catch(err => throwAlert(0,err,arguments.callee.name));
+        inputBtnImport.disabled=false;
+        loader(false);
+      }
+
+      function processResp(json) {
+        // Process response
+        hideUpload();
+        if (json.hasOwnProperty('tree')) renderTree(json.tree);
+        if (json.hasOwnProperty('devices')) saveSession(json.devices);
+        throwAlert(2,'Data imported successfully.',arguments.callee.name)
+      }
+
+      function saveSession(devices) {
+        // Store devices in cookies
+        if (!Array.isArray(devices)) throwAlert(0,'Wrong data type returned in json.devices!',arguments.callee.name);
+        sessionStorage.setItem('devices', JSON.stringify(devices));
+      }
+
+      function renderTree(tree) {
+        let dom = treeRecursive(tree,textArea);
+        inputBtnExport.disabled=false;
+      }
+
+      function treeRecursive(tree, parent) {
+        if (Array.isArray(tree)) {
+          // render mRemoteNG connections
+          for (const item of tree) {
+            let child = document.createElement('div');
+            let title = document.createElement('span');
+            let icon = document.createElement('i');
+            icon.classList.add('icon','icon-server_16');
+            child.appendChild(icon);
+            child.classList.add('mrng-connection');
+            title.innerText = item.name + ' (' + item.address + ')';
+            child.appendChild(title);
+            parent.appendChild(child);
+          }
+        }
+        else {
+          for (const item in tree) {
+            if (typeof tree[item] === 'object' && tree[item] !== null) {
+              // render mRemoteNG containers
+              let child = document.createElement('div');
+              let title = document.createElement('span');
+              let icon = document.createElement('i');
+              icon.classList.add('icon','icon-open-in-folder_16');
+              child.appendChild(icon);
+              title.innerText = item;
+              child.appendChild(title);
+              child.classList.add('mrng-container');
+              child = treeRecursive(tree[item],child);
+              parent.appendChild(child);
+            }
+          }
+        }
+        return parent;
+      }
+
+      function treeRecursiveV1(tree) {
+        let nodes = document.createElement('div');
+        if (tree.hasOwnProperty('name') && tree.hasOwnProperty('address')) {
+          // render mRemoteNG connection
+          nodes.innerText = tree.name + ' - ' + tree.address;
+          nodes.classList.add('mrng-connection');
+        }
+        else {
+          // render mRemoteNG containers
+          nodes.classList.add('mrng-container');
+          for (const item in tree) {
+            if (typeof tree[item] === 'object' && tree[item] !== null) {
+              let child = treeRecursive(tree[item]);
+              if (item.startsWith('DID')) {
+                nodes = child;
+              }
+              else {
+                let title = document.createElement('span');
+                title.innerText = item;
+                nodes.appendChild(title);
+                nodes.appendChild(child);
+              }
+            }
+          }
+        }
+        return nodes;
+      }
+
+      function loader(state) {
+        const loading = document.getElementById('loader');
+        const load = '<i class="md-spinner md-spinner--36 md-spinner--blue"></i>';
+        if (!state && loading) {
+          loading.remove();
+        } else if (state && !loading) {
+          const loadingNew = document.createElement('div');
+          loadingNew.innerHTML = load;
+          loadingNew.id = 'loader';
+          document.body.appendChild(loadingNew);
+        }
+      }
+
+      function throwAlert(lvl,msg,src=null) {
+        if (src) msg += ` (in ${src}).`;
+        const levels = ['error','warning','success','info'];
+        const alertPopup = document.createElement('div')
+        alertPopup.classList.add('md-alert','md-alert--' + levels[lvl]);
+        const alertTemplate = `
+          <div class="md-alert__icon"></div>
+          <div class="md-alert__content">
+            <div class="md-alert__title">${levels[lvl].toUpperCase()}!</div>
+            <div class="md-alert__message">
+              ${msg}
+            </div>
+          </div>
+          <div class="md-alert__button">
+            <button type="button" class="md-button md-button--circle md-button--large" onclick="cancelAlert(this)">
+              <span class="md-button__children icon icon-cancel_14"></span>
+            </button>
+          </div>`;
+        alertPopup.innerHTML = alertTemplate;
+        alertContainer.appendChild(alertPopup);
+      }
+      function cancelAlert(el) {
+        el.closest('div.md-alert').remove();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "mrng-config-gen",
+  "version": "1.0.0",
+  "description": "mRemoteNG config generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dpylypen",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^5.2.0",
+    "express": "^4.18.1",
+    "log4js": "^6.5.2"
+  }
+}
