@@ -1,14 +1,14 @@
 # mrng-config-gen
 Web-based mRemoteNG connections file generator
 
-## Development
+## Deployment
 Clone this repo using a git client:
 ```
 git clone https://github.com/Drastic/mrng-config-gen.git
 ```
-Install depencies:
+Deploy:
 ```
-node install
+docker compose up
 ```
 
 ## Run
@@ -24,9 +24,9 @@ http://localhost:8000
 ## Todo
 1) Publish on Github - Done
 2) Logging - In progress
-3) MongoDB
-4) Config files
-5) Docker
+3) MongoDB - Done
+4) Config files - In progress
+5) Docker and docker-compose - Done
 
 ## Credit
 HTML is using @momentum-ui by Cisco
