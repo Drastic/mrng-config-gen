@@ -1,0 +1,16 @@
+No,Device Name,IP Address,Device Category,Device Class | Sub-class,DID,Organization
+1,Computer1,192.168.0.11,Lobby,Desktop,1,Demo Corp.
+2,Computer2,192.168.0.12,Lobby,Desktop,2,Demo Corp.
+3,Computer3,192.168.0.13,Lobby,Desktop,3,Demo Corp.
+4,Computer4,192.168.0.14,Lobby,Desktop,4,Demo Corp.
+5,Computer5,192.168.0.15,Room 1,Laptop,5,Demo Corp.
+6,Computer6,192.168.0.16,Room 1,Laptop,6,Demo Corp.
+7,Computer7,192.168.0.17,Room 1,Laptop,7,Demo Corp.
+8,Computer8,192.168.0.18,Room 1,Desktop,8,Demo Corp.
+9,Computer9,192.168.0.19,Room 1,Desktop,9,Demo Corp.
+10,Computer10,192.168.0.20,Room 2,Server,10,Demo Corp.
+11,Computer11,192.168.0.21,Room 2,Server,11,Demo Corp.
+12,Computer12,192.168.0.22,Room 2,Server,12,Demo Corp.
+13,Computer13,192.168.0.23,Room 2,Laptop,13,Demo Corp.
+14,Computer14,192.168.0.24,Room 3,Laptop,14,Demo Corp.
+15,Computer15,192.168.0.25,Room 3,Laptop,15,Demo Corp.
