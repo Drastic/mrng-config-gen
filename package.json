@@ -1,8 +1,13 @@
 {
   "name": "mrng-config-gen",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "mRemoteNG config generator",
-  "main": "index.js",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./*.js": "./src/*.js",
+    "./modules/*.js": "./src/modules/*.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +16,8 @@
   "dependencies": {
     "csv-parse": "^5.2.0",
     "express": "^4.18.1",
-    "log4js": "^6.5.2"
+    "log4js": "^6.5.2",
+    "mongodb": "^4.7.0",
+    "mongoose": "^6.4.2"
   }
 }

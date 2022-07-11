@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Project</title>
+    <link rel="stylesheet" href="./css/momentum-ui.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+
+  <body>
+    <header class="md-top-bar md-top-bar--blue" role="navigation">
+      <div class="md-top-bar__container">
+        <div class="md-top-bar__brand">
+          <a class="md-brand" href="/">
+            <div class="md-brand__logo md-brand__logo--pad">
+              <!-- Note: use either image or icon, but not both -->
+              <img src="./images/cisco/cisco-logo-blue.svg" alt="Momentum UI">
+              <!-- i class="icon icon-cisco-logo"></i -->
+            </div>
+            <div class="md-brand__title">CMSP to mRemoteNG</div>
+          </a>
+        </div>
+        <nav class="md-top-bar__nav ">
+          <div class="md-list md-list--horizontal" role="list">
+            <a class="md-list-item active" role="listItem" href="javascript:void(0)">Home</a>
+          </div>
+        </nav>
+        <div class="md-top-bar__right ">
+          <!-- Note: conditionally show top-bar__user or top-bar__logged-out -->
+           <div class="md-top-bar__user">
+             <button class="md-avatar md-button md-button--circle md-button--link">
+                CU
+             </button>
+           </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="row full">
+
+        <!-- SIDEBAR -->
+        <div class="columns medium-3">
+          <div class="md-card">
+            <div class="md-card-section text-center">
+              <h3>Organization:</h3>
+              <select id="filter-org">
+                <option value="">
+              </select>
+            </div>
+          </div>
+          <div id="filter" class="md-card">
+            <div class="md-card-section text-center">
+              <h3>Filter</h3>
+              <form>
+
+                <fieldset>
+                  <legend>Category:</legend>
+                  <div id="filter-cat">
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Class:</legend>
+                  <div id="filter-role">
+                  </div>
+                </fieldset>
+
+              </form>
+
+              <div class="" style="margin-top:10px;">
+                <button id="filter-submit" type="button" class="md-button md-button--default">Apply</button>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="md-card">
+            <div class="md-card-section text-center">
+              <h3>Tools</h3>
+              <button id='upload-button' type="button" class="md-button md-button--blue md-button--expand">Import</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- MAIN SECTION -->
+        <div class="columns medium-9">
+          <h3>Connections Tree</h3>
+          <div id="mrng-content"></div><br>
+          <div id="mrng-control"><button id="mrng-btn-export" type="button" class="md-button md-button--blue" disabled>Generate export file</button></div>
+        </div>
+
+        <!-- DETAILS SECTION -->
+        <div id="mrng-details" class="md-drawer md-drawer--right md-drawer--right--closed">
+          <h3>Detals:</h3>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="md-footer md-footer__bottom">
+      <i class="icon icon-cisco-logo_16"></i>
+      <span class="md-footer__copyright">2022</span>
+    </footer>
+
+    <div id="alert-container" class="md-alert__container md-alert__container--bottom-right"></div>
+
+    <div id="upload-modal" class="md-modal__backdrop fade in hide">
+      <div
+        role="dialog"
+        id="react-aria-modal-dialog"
+        class="md-modal md-modal--small in"
+        aria-labelledby="modal5"
+      >
+        <div class="md-modal__content">
+          <div class="md-modal__flex-container">
+            <div class="md-modal__header">
+              <span class="md-modal__title">Device List Upload</span>
+              <span class="md-modal__message">Upload device list in *.csv format</span>
+              <span class="md-modal__message font-size_small">Columns required: Name|Address|Category|Class|DID|Organization</span>
+              <button class="md-close md-modal__close" onclick="hideUpload()"></button>
+            </div>
+            <div class="md-alert-banner md-alert-banner--error hide">
+              <div id="mrng-error" class="md-alert-banner__text"></div>
+            </div>
+            <!-- div class="md-modal__image"><img src="./images/cisco/cisco-logo-blue.svg" alt="Momentum UI"></div -->
+            <div class="md-modal__body">
+              <form class="" id="mrng-form" action="/upload" method="POST" enctype="multipart/form-data">
+                <input id="mrng-file" type="file" hidden />
+                <div class="md-panel__cta">
+                  <label class="md-label__secondary-label">&nbsp;</label>
+                  <button id="mrng-btn-import" type="button" class="md-button md-button--blue">Upload file</button>
+                  <label class="md-label__secondary-label" for="secondaryLabelInput">
+                    <span id="mrng-fname" class="md-input__secondary-label">None</span>
+                  </label>
+                </div>
+              </form>
+            </div>
+            <div class="md-modal__footer">
+              <button
+                class="md-button md-button--36 md-button--default"
+                alt="Close Modal"
+                type="button"
+                aria-label="Close Modal"
+                onclick="hideUpload()"
+              >
+                <span class="md-button__children" style="opacity: 1;">Cancel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
