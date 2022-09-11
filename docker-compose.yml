@@ -1,5 +1,7 @@
 version: "3"
+
 services:
+
  web:
   container_name: web
   image: dockerfile
@@ -9,6 +11,8 @@ services:
   - "8000:8000"
   links:
   - mongo
+  depends_on: mongo
+
  mongo:
   container_name: mongo
   image: mongo

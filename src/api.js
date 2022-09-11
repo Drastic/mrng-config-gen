@@ -1,6 +1,7 @@
 // Modules
 const connections = require('./modules/connections');
-const db = require('./modules/database');
+const DB = require('./modules/database');
+const db = new DB();
 
 const ORG = 'cisco';
 
