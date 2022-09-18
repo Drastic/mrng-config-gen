@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const schema = require('./schema');
 
 // Log4js
 const log4js = require('log4js');
@@ -18,14 +19,7 @@ class Database {
       return Database.instance;
     }
 
-    this.deviceSchema = new mongoose.Schema({
-			did: {type: String, required: true },
-			name: {type: String, required: true },
-			address: {type: String, required: true },
-			org: {type: String, required: true },
-			cat: {type: String, required: true },
-			role: {type: String, required: true }
-		});
+    this.deviceSchema = new mongoose.Schema(schema);
     
 		mongoose
 			.connect(
