@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
 const schema = require('./schema');
-
-// Log4js
-const log4js = require('log4js');
-log4js.configure({
-  appenders: { db: { type: 'stdout' } },
-  categories: { default: { appenders: ['db'], level: 'debug' } },
-});
-const logger = log4js.getLogger('db');
+const logger = require('./logger')('db');
 
 
 class Database {
@@ -26,7 +19,7 @@ class Database {
 			'mongodb://localhost:27017/mrng',
 			{ useNewUrlParser: true }
 			)
-			.then(() => logger.info('MongoDB Connected'))
+			.then(() => logger.info('MongoDB connected'))
 			.catch(err => logger.error(err));
 
     //Object.freeze(this.deviceSchema);

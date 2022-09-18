@@ -1,13 +1,7 @@
 const parse = require('csv-parse/sync').parse;
 //const csv = require('express-request-csv');
+const logger = require('./logger')('connections');
 
-// Log4js
-const log4js = require('log4js');
-log4js.configure({
-  appenders: { connections: { type: 'stdout' } },
-  categories: { default: { appenders: ['connections'], level: 'debug' } },
-});
-const logger = log4js.getLogger('connections');
 
 class Device {
   did;

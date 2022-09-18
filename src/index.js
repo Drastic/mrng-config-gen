@@ -1,13 +1,6 @@
 const path = require('path');
 const webDir = path.join(__dirname, '/static');
-
-// Log4js
-const log4js = require('log4js');
-log4js.configure({
-  appenders: { app: { type: 'stdout' } },
-  categories: { default: { appenders: ['app'], level: 'debug' } },
-});
-const logger = log4js.getLogger('app');
+const logger = require('./modules/logger')('app');
 
 // Express
 const express = require('express');

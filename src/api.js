@@ -1,17 +1,10 @@
-// Modules
 const connections = require('./modules/connections');
 const DB = require('./modules/database');
 const db = new DB();
+const logger = require('./modules/logger')('api');
 
 const ORG = 'cisco';
 
-// Log4js
-const log4js = require('log4js');
-log4js.configure({
-  appenders: { api: { type: 'stdout' } },
-  categories: { default: { appenders: ['api'], level: 'debug' } },
-});
-const logger = log4js.getLogger('api');
 
 // Express
 const express = require('express');
